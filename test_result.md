@@ -149,9 +149,26 @@ backend:
         -comment: "✅ Both endpoints tested and working. GET /api/root and GET /api/ both return 200 status with JSON containing 'message' field ('Kıbrıs Taksi 24 API'). CORS headers present."
 
 frontend:
+  - task: "Site-wide CSS/layout rendering (broken CSS bug fix)"
+    implemented: true
+    working: true
+    file: "package.json (dev NODE_OPTIONS max-old-space-size 512 -> 2048)"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: false
+        -agent: "user"
+        -comment: "User reported the website looks broken: layouts and CSS all messed up."
+        -working: "NA"
+        -agent: "main"
+        -comment: "Root cause: Next dev server was capped at 512MB and hit the memory threshold repeatedly, restarting. On restart the browser requested the previous build's /_next/static/css/app/layout.css which no longer existed (404) -> pages rendered unstyled/broken. Fix: raised NODE_OPTIONS max-old-space-size to 2048 in package.json dev script and restarted nextjs. Verified: layout.css now 200 (103KB, contains bg-ink/text-gold/.container/whatsapp), 8 pages return 200, no more memory-threshold restarts in logs. Needs UI verification."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ BUG IS FIXED! Comprehensive UI verification completed. layout.css loads successfully (HTTP 200) on all pages tested. NO 404 errors detected (0 failed requests). NO console errors. All 5 pages return HTTP 200 (home, /girne-taksi, /kibris-vito-transfer, /blog, /iletisim). Visual verification confirms: dark navy hero (rgb(11,31,51)), gold accent text 'Kaliteli', white booking widget, styled header with logo, footer, WhatsApp button, mobile hamburger menu. Breadcrumb and H1 'Girne Taksi' verified on landing page. Memory limit fix (512MB->2048MB) successfully resolved the CSS compilation/serving issue."
   - task: "Public site (home, city/route landing pages, booking widget, blog, contact)"
     implemented: true
-    working: "NA"
+    working: true
     file: "app/page.js, app/[slug]/page.js, components/site/*"
     stuck_count: 0
     priority: "high"
@@ -159,12 +176,15 @@ frontend:
     status_history:
         -working: "NA"
         -agent: "main"
-        -comment: "Frontend built. Not yet tested by automation (awaiting user permission)."
+        -comment: "V2 SEO revision applied: unified landing template with H1/H2/H3, taximeter (no fixed-price), real Mercedes fleet, Service+SearchAction schema, new pages (vito transfer, gunluk turlar, karsiyaka/camlibel/gau, cratos), favicon."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ All public pages verified working with proper styling. Home page: dark navy hero, gold 'Kaliteli ve Uygun' text, white booking widget card, sticky header with KıbrısTaksi24 logo, stats section (120.000+, 4.9/5, 7/24, Mercedes), WhatsApp buttons (floating + in widget). Landing page (/girne-taksi): H1 'Girne Taksi', breadcrumb (Ana Sayfa > Girne Taksi), trust badges, vehicle info, footer. Other pages (/kibris-vito-transfer, /blog, /iletisim) all load with proper header/footer styling. Mobile viewport: hamburger menu button visible and functional. All Tailwind CSS classes applied correctly."
 
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: false
 
 test_plan:
@@ -178,3 +198,7 @@ agent_communication:
     -message: "Backend has 3 endpoints under the Next.js catch-all route (/api/reservations POST+GET, /api/contact POST, /api/root GET). Please test CRUD + validation (missing from/to -> 400 for reservations; missing name/message -> 400 for contact). Ensure UUIDs used (no Mongo _id in responses). MongoDB uses MONGO_URL and DB_NAME from env. Do NOT test frontend yet."
     -agent: "testing"
     -message: "✅ Backend testing complete - ALL TESTS PASSED (6/6). Tested all 3 API endpoints: 1) Root health endpoints (GET /api/root, GET /api/) return 200 with message. 2) Reservation API: POST creates with UUID (oneWay & roundTrip tested), validates from/to (400 on missing), GET lists all with proper structure. 3) Contact API: POST creates with UUID, validates name/message (400 on missing). All responses use UUID v4 (no MongoDB _id exposed), CORS headers present, field mapping correct. Backend is production-ready."
+    -agent: "main"
+    -message: "User reported CSS/layout bug (website looks broken). Root cause identified: dev server memory limit (512MB) causing restarts and 404s for layout.css. Fixed by raising NODE_OPTIONS to 2048MB. Requesting UI verification that CSS loads and pages render styled."
+    -agent: "testing"
+    -message: "✅ CSS/LAYOUT BUG FIX VERIFIED - ALL TESTS PASSED. Comprehensive testing confirms the bug is completely fixed. layout.css loads successfully (HTTP 200) on all pages. Zero 404 errors, zero console errors. All 5 pages tested (home, /girne-taksi, /kibris-vito-transfer, /blog, /iletisim) return HTTP 200 with full Tailwind styling applied. Visual elements verified: dark navy hero section, gold accent text, white booking widget, styled header/footer, WhatsApp buttons, mobile hamburger menu, breadcrumbs, H1 headings. The memory limit increase (512MB->2048MB) successfully resolved the CSS compilation issue. Website is fully functional and properly styled."
