@@ -3,7 +3,7 @@ import { LandingTemplate } from '@/components/site/landing-template'
 import { notFound } from 'next/navigation'
 import { SITE } from '@/lib/site'
 
-export const dynamicParams = false
+export const dynamicParams = true
 
 export async function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }))

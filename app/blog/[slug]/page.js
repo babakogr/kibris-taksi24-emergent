@@ -7,7 +7,7 @@ import { SITE, waUrl } from '@/lib/site'
 import { Button } from '@/components/ui/button'
 import { CalendarDays, ArrowLeft } from 'lucide-react'
 
-export const dynamicParams = false
+export const dynamicParams = true
 export async function generateStaticParams() { return POSTS.map((p) => ({ slug: p.slug })) }
 
 export async function generateMetadata({ params }) {

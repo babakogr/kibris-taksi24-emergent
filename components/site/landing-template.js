@@ -14,6 +14,23 @@ import { Button } from '@/components/ui/button'
 
 const ICONS = { Car, Clock, Gauge, ThumbsUp, PlaneLanding }
 
+function titleCase(str) {
+  return String(str).split(' ').map((w) => (w.match(/^[0-9]/) ? w : w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1))).join(' ')
+}
+
+const CLUSTER_VARIANTS = [
+  (kw, name) => `${name} bölgesinde ${kw} arayan misafirlerimize, bakımlı Mercedes E-Class ve Vito araçlarımızla 7/24 kesintisiz hizmet veriyoruz. Talebinizi WhatsApp'tan iletmeniz yeterli; müsaitlik ve yaklaşık bilgiyi dakikalar içinde paylaşıyoruz.`,
+  (kw, name) => `${kw} talebiniz için yolculuğunuz taksimetre ile şeffaf biçimde ücretlendirilir; gizli masraf çıkmaz. ${name} ve çevresini iyi bilen şoförlerimiz sizi en kısa ve konforlu güzergâhtan ulaştırır.`,
+  (kw, name) => `${name} için ${kw} hizmetimizde kapıdan kapıya karşılama sağlıyoruz. Bebek/çocuk koltuğu ve ek bagaj taleplerinizi önceden belirtmeniz halinde aracınızı buna göre hazırlıyoruz.`,
+  (kw, name) => `Gece geç saatler dahil ${kw} ihtiyacınızı 7/24 karşılıyoruz. ${name} bölgesinde otel, adres veya terminalden alım yaparak güvenli ve zamanında ulaşımınızı sağlıyoruz.`,
+  (kw, name) => `Aileler ve gruplar için ${kw} taleplerinde Mercedes Vito, bireysel yolculuklarda ise E-Class öneriyoruz. ${name} çevresindeki tüm otel ve noktalar için hızlı çözüm sunuyoruz.`,
+  (kw, name) => `${kw} konusunda deneyimli ekibimiz, kurumsal ve turistik tüm talepleri profesyonelce yönetir. ${name} için hemen WhatsApp'tan yazın, size en uygun aracı ve saati birlikte planlayalım.`,
+]
+
+function clusterText(kw, page, i) {
+  return CLUSTER_VARIANTS[i % CLUSTER_VARIANTS.length](kw, page.name)
+}
+
 export function LandingTemplate({ page }) {
   const url = `${SITE.url}/${page.slug}`
   const heroPrefillFrom = page.from === 'Ercan Havalimanı' ? 'Ercan Havalimanı' : ''
@@ -138,14 +155,17 @@ export function LandingTemplate({ page }) {
             ))}
 
             {page.subKeywords?.length > 0 && (
-              <div className="mt-8">
-                <h3 className="font-display text-xl font-bold text-ink">Hizmet Kapsamımız</h3>
-                <p className="mt-3 text-[15px] leading-relaxed text-ink/80">
-                  {page.name} bölgesinde ve çevresinde en çok aranan hizmetler arasında{' '}
-                  {page.subKeywords.map((k, i) => (
-                    <span key={k}>{i > 0 ? ', ' : ''}<strong className="font-semibold text-ink">{k}</strong></span>
-                  ))}{' '}yer alır. Tüm bu talepleri bakımlı Mercedes araçlarımız ve deneyimli şoförlerimizle 7/24 karşılıyoruz.
-                </p>
+              <div className="mt-10">
+                <h2 className="font-display text-2xl font-extrabold text-ink sm:text-3xl">{page.name} Taksi Hizmet Detayları</h2>
+                <p className="mt-3 text-[15px] leading-relaxed text-ink/80">Aşağıda, {page.name} bölgesinde kullanıcıların Google'da en çok aradığı hizmet başlıklarını ve bu konudaki yaklaşımımızı bulabilirsiniz.</p>
+                <div className="mt-5 space-y-6">
+                  {page.subKeywords.map((kw, i) => (
+                    <div key={kw}>
+                      <h3 className="font-display text-lg font-bold text-ink">{titleCase(kw)}</h3>
+                      <p className="mt-2 text-[15px] leading-relaxed text-ink/80">{clusterText(kw, page, i)}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
