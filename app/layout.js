@@ -11,8 +11,8 @@ const poppins = Poppins({ subsets: ['latin', 'latin-ext'], weight: ['500', '600'
 export const metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: 'Kıbrıs Taksi | 7/24 KKTC Taksi & Ercan Havalimanı Transfer | Kıbrıs Taksi 24',
-    template: '%s | Kıbrıs Taksi 24',
+    default: 'Kıbrıs Taksi | Kaliteli ve Uygun | +90 548 875 7731',
+    template: '%s',
   },
   description:
     "Kıbrıs Taksi 24 — KKTC'nin premium taksi & transfer platformu. Ercan Havalimanı, Girne, Lefkoşa, Gazimağusa transferleri. 7/24 sabit fiyat, uçuş takipli karşılama, WhatsApp ile 60 saniyede rezervasyon.",
@@ -33,6 +33,11 @@ export const metadata = {
     description: "KKTC geneli 7/24 sabit fiyatlı premium taksi ve havalimanı transfer hizmeti.",
   },
   robots: { index: true, follow: true },
+  icons: {
+    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
+    shortcut: ['/icon.svg'],
+    apple: [{ url: '/icon.svg', type: 'image/svg+xml' }],
+  },
 }
 
 const orgLd = {
@@ -63,6 +68,12 @@ const websiteLd = {
   '@type': 'WebSite',
   name: SITE.name,
   url: SITE.url,
+  inLanguage: 'tr-TR',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: { '@type': 'EntryPoint', urlTemplate: `${SITE.url}/blog?q={search_term_string}` },
+    'query-input': 'required name=search_term_string',
+  },
 }
 
 export default function RootLayout({ children }) {

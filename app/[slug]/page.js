@@ -14,20 +14,20 @@ export async function generateMetadata({ params }) {
   const page = getPage(slug)
   if (!page) return {}
   return {
-    title: page.title,
-    description: page.description,
-    keywords: page.keywords,
+    title: page.metaTitle,
+    description: page.metaDescription,
+    keywords: [page.kw, ...(page.subKeywords || [])],
     alternates: { canonical: `/${slug}` },
     openGraph: {
       type: 'website',
       locale: 'tr_TR',
       url: `${SITE.url}/${slug}`,
       siteName: SITE.name,
-      title: page.title,
-      description: page.description,
+      title: page.metaTitle,
+      description: page.metaDescription,
       images: [{ url: page.hero }],
     },
-    twitter: { card: 'summary_large_image', title: page.title, description: page.description, images: [page.hero] },
+    twitter: { card: 'summary_large_image', title: page.metaTitle, description: page.metaDescription, images: [page.hero] },
   }
 }
 
