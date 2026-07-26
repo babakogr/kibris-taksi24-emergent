@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Menu, ChevronDown, Phone, Car } from 'lucide-react'
+import { Menu, ChevronDown, Phone } from 'lucide-react'
 import { NAV, SITE, waUrl } from '@/lib/site'
 import { useLang } from './lang-provider'
 import { Button } from '@/components/ui/button'
@@ -34,9 +34,7 @@ export function Header() {
       <div className="border-b border-border bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
         <div className="container flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ink text-gold">
-              <Car className="h-5 w-5" />
-            </span>
+            <img src="/icon.svg" alt="Kıbrıs Taksi 24" width="36" height="36" className="h-9 w-9" />
             <span className="font-display text-lg font-extrabold leading-none tracking-tight text-ink">
               Kıbrıs<span className="text-gold">Taksi</span>24
             </span>

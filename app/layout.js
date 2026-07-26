@@ -34,9 +34,7 @@ export const metadata = {
   },
   robots: { index: true, follow: true },
   icons: {
-    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
-    shortcut: ['/icon.svg'],
-    apple: [{ url: '/icon.svg', type: 'image/svg+xml' }],
+    icon: [{ url: '/icon.svg', type: 'image/svg+xml', sizes: '96x96' }],
   },
 }
 
@@ -49,6 +47,7 @@ const orgLd = {
   '@type': 'Organization',
   name: SITE.legalName,
   url: SITE.url,
+  logo: `${SITE.url}/logo.svg`,
   telephone: `+${SITE.phoneRaw}`,
   email: SITE.email,
   areaServed: SITE.areaServed,
