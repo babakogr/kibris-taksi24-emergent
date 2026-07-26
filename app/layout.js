@@ -40,8 +40,12 @@ export const metadata = {
   },
 }
 
+const organizationId = `${SITE.url}/#organization`
+const localBusinessId = `${SITE.url}/#localbusiness`
+
 const orgLd = {
   '@context': 'https://schema.org',
+  '@id': organizationId,
   '@type': 'Organization',
   name: SITE.legalName,
   url: SITE.url,
@@ -51,16 +55,61 @@ const orgLd = {
   slogan: SITE.slogan,
 }
 
-const localBusinessLd = {
+const hasPhysicalBusinessAddress = Boolean(
+  SITE.address?.streetAddress && SITE.address?.addressLocality
+)
+
+const localBusinessLd = hasPhysicalBusinessAddress ? {
   '@context': 'https://schema.org',
-  '@type': 'TaxiService',
-  name: SITE.name,
+  '@id': localBusinessId,
+  '@type': 'LocalBusiness',
+  name: SITE.legalName,
   url: SITE.url,
   telephone: `+${SITE.phoneRaw}`,
+  email: SITE.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: SITE.address.streetAddress,
+    addressLocality: SITE.address.addressLocality,
+    addressRegion: SITE.address.addressRegion || undefined,
+    postalCode: SITE.address.postalCode || undefined,
+    addressCountry: SITE.address.addressCountry,
+  },
+  parentOrganization: { '@id': organizationId },
+  openingHoursSpecification: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    opens: '00:00',
+    closes: '23:59',
+  },
+  priceRange: '$$',
+} : null
+
+const taxiServiceLd = {
+  '@context': 'https://schema.org',
+  '@id': `${SITE.url}/#taxi-service`,
+  '@type': 'TaxiService',
+  name: `${SITE.name} Taxi & Transfer`,
+  url: SITE.url,
+  provider: { '@id': localBusinessLd ? localBusinessId : organizationId },
+  serviceType: 'Taxi and private transfer',
   areaServed: SITE.areaServed,
-  openingHours: 'Mo-Su 00:00-23:59',
-  aggregateRating: { '@type': 'AggregateRating', ratingValue: SITE.rating.value, reviewCount: SITE.rating.count },
-  provider: { '@type': 'LocalBusiness', name: SITE.legalName, telephone: `+${SITE.phoneRaw}` },
+  availableChannel: {
+    '@type': 'ServiceChannel',
+    servicePhone: {
+      '@type': 'ContactPoint',
+      telephone: `+${SITE.phoneRaw}`,
+      contactType: 'customer service',
+      availableLanguage: ['Turkish', 'English'],
+    },
+  },
+  hoursAvailable: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    opens: '00:00',
+    closes: '23:59',
+  },
+  providerMobility: 'dynamic',
 }
 
 const websiteLd = {
@@ -82,7 +131,8 @@ export default function RootLayout({ children }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: 'window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);' }} />
         <JsonLd data={orgLd} />
-        <JsonLd data={localBusinessLd} />
+        {localBusinessLd && <JsonLd data={localBusinessLd} />}
+        <JsonLd data={taxiServiceLd} />
         <JsonLd data={websiteLd} />
       </head>
       <body className="font-sans antialiased">

@@ -53,8 +53,7 @@ export function LandingTemplate({ page }) {
     '@context': 'https://schema.org', '@type': 'Service',
     serviceType: page.kw, name: page.kw, description: page.metaDescription, url,
     areaServed: { '@type': 'Place', name: SITE.areaServed },
-    provider: { '@type': 'LocalBusiness', name: SITE.legalName, telephone: `+${SITE.phoneRaw}`, url: SITE.url, priceRange: '$$', areaServed: SITE.areaServed },
-    aggregateRating: { '@type': 'AggregateRating', ratingValue: SITE.rating.value, reviewCount: SITE.rating.count },
+    provider: { '@id': `${SITE.url}/#organization` },
   }
 
   // ---- related links ----
